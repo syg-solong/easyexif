@@ -32,7 +32,7 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 
 using std::string;
@@ -151,6 +151,7 @@ class IFEntry {
         val_long_ = nullptr;
         break;
       case 0x5:
+      case 0xA:   // signed rational
         delete val_rational_;
         val_rational_ = nullptr;
         break;
@@ -177,6 +178,7 @@ class IFEntry {
         val_long_ = new long_vector();
         break;
       case 0x5:
+      case 0xA:   // signed rational
         val_rational_ = new rational_vector();
         break;
       case 0xff:
@@ -364,6 +366,7 @@ IFEntry parseIFEntry_temp(const unsigned char *buf, const unsigned offs,
       }
       break;
     case 5:
+    case 10:
       if (!extract_values<Rational, alignIntel>(result.val_rational(), buf,
                                                 base, len, result)) {
         result.tag(0xFF);
@@ -371,7 +374,6 @@ IFEntry parseIFEntry_temp(const unsigned char *buf, const unsigned offs,
       break;
     case 7:
     case 9:
-    case 10:
       break;
     default:
       result.tag(0xFF);
@@ -631,13 +633,13 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 0x9201:
           // Shutter speed value
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.format() == 10 && !result.val_rational().empty())
             this->ShutterSpeedValue = result.val_rational().front();
           break;
 
         case 0x9204:
           // Exposure bias value
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.format() == 10 && !result.val_rational().empty())
             this->ExposureBiasValue = result.val_rational().front();
           break;
 
