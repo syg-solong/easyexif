@@ -73,6 +73,12 @@ class EXIFInfo {
                                     // 8: lower left of image
                                     // 9: undefined
   unsigned short BitsPerSample;     // Number of bits per component
+  double XResolution;               // Num pixels per <ResolutionUnit> - 72dpi by default
+  double YResolution;               // Num pixels per <ResolutionUnit> - 72dpi by default
+  unsigned short ResolutionUnit;    // Units for <XResolution> and <YResolution>
+                                    // 1: (unused)
+                                    // 2: inches (default)
+                                    // 3: centimetres
   std::string Software;             // Software used
   std::string DateTime;             // File change date and time
   std::string DateTimeOriginal;     // Original file date and time (may not exist)

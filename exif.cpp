@@ -555,6 +555,24 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
           this->Orientation = result.val_short().front();
         break;
 
+      case 0x11A:
+        // X resolution
+        if (result.format() == 5 && !result.val_rational().empty())
+           this->XResolution = result.val_rational().front();
+        break;
+
+      case 0x11B:
+        // Y resolution
+        if (result.format() == 5 && !result.val_rational().empty())
+           this->YResolution = result.val_rational().front();
+        break;
+
+      case 0x128:
+        // Resolution units
+        if (result.format() == 3 && !result.val_short().empty())
+           this->ResolutionUnit = result.val_short().front();
+        break;
+
       case 0x131:
         // Software used for image
         if (result.format() == 2) this->Software = result.val_string();
@@ -876,6 +894,9 @@ void easyexif::EXIFInfo::clear() {
   Orientation = 0;
 
   BitsPerSample = 0;
+  XResolution = 72.0;
+  YResolution = 72.0;
+  ResolutionUnit = 2;   // default is inches
   ExposureTime = 0;
   FNumber = 0;
   ExposureProgram = 0;
