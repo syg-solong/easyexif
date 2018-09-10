@@ -97,6 +97,10 @@ class EXIFInfo {
                                     // 6: Action program
                                     // 7: Portrait mode
                                     // 8: Landscape mode
+  unsigned short ExposureMode;      // Exposure mode
+                                    // 0: Auto
+                                    // 1: Manual
+                                    // 2: Auto bracket
   unsigned short ISOSpeedRatings;   // ISO speed
   double ShutterSpeedValue;         // Shutter speed (reciprocal of exposure time)
   double ExposureBiasValue;         // Exposure bias value in EV

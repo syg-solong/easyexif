@@ -733,6 +733,13 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
             }
             break;
 
+        case 0xa402:
+            // Exposure mode
+            if (result.format() == 3 && !result.val_short().empty()) {
+                this->ExposureMode = result.val_short().front();
+            }
+            break;
+
         case 0xa405:
           // Focal length in 35mm film
           if (result.format() == 3 && !result.val_short().empty())
@@ -900,6 +907,7 @@ void easyexif::EXIFInfo::clear() {
   ExposureTime = 0;
   FNumber = 0;
   ExposureProgram = 0;
+  ExposureMode = std::numeric_limits<unsigned short>::max();
   ISOSpeedRatings = 0;
   ShutterSpeedValue = 0;
   ExposureBiasValue = 0;
