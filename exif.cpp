@@ -625,11 +625,11 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
             this->FNumber = result.val_rational().front();
           break;
 
-      case 0x8822:
-        // Exposure Program
-        if (result.format() == 3 && !result.val_short().empty())
-          this->ExposureProgram = result.val_short().front();
-        break;
+        case 0x8822:
+          // Exposure Program
+          if (result.format() == 3 && !result.val_short().empty())
+            this->ExposureProgram = result.val_short().front();
+          break;
 
         case 0x8827:
           // ISO Speed Rating
