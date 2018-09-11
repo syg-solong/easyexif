@@ -116,6 +116,9 @@ class EXIFInfo {
   double SubjectDistance;           // Distance to focus point in meters
   double FocalLength;               // Focal length of lens in millimeters
   unsigned short FocalLengthIn35mm; // Focal length in 35mm film
+  unsigned short FlashUnmodified;   // The raw data from the field (Not an EXIF field name)
+                                    // The other three fields don't cover all possibilities
+                                    // for the flash info (e.g. 0x08 "On, Did not fire")
   char Flash;                       // 0 = no flash, 1 = flash used
   unsigned short FlashReturnedLight;// Flash returned light status
                                     // 0: No strobe return detection function

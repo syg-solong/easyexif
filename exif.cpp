@@ -672,6 +672,7 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
           if (result.format() == 3 && !result.val_short().empty()) {
             uint16_t data = result.val_short().front();
 
+            this->FlashUnmodified = data;
             this->Flash = data & 1;
             this->FlashReturnedLight = (data & 6) >> 1;
             this->FlashMode = (data & 24) >> 3;
@@ -914,6 +915,7 @@ void easyexif::EXIFInfo::clear() {
   SubjectDistance = std::numeric_limits<double>::max();
   FocalLength = std::numeric_limits<double>::max();
   FocalLengthIn35mm = std::numeric_limits<unsigned short>::max();
+  FlashUnmodified = std::numeric_limits<unsigned short>::max();
   Flash = std::numeric_limits<char>::max();
   FlashReturnedLight = std::numeric_limits<unsigned short>::max();
   FlashMode = std::numeric_limits<unsigned short>::max();
