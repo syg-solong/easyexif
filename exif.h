@@ -34,6 +34,7 @@
 #ifndef __EXIF_H
 #define __EXIF_H
 
+#include <cmath>
 #include <string>
 
 namespace easyexif {
@@ -59,6 +60,14 @@ class EXIFInfo {
 
   // Set all data members to default values.
   void clear();
+
+  // Check if the value is valid
+  template<typename T>
+  inline bool isValid( T data ) const
+  {
+     static_assert( std::is_arithmetic<T>::value, "T must be numeric" );
+     return data != std::numeric_limits<T>::max();
+  }
 
   // Data fields filled out by parseFrom()
   char ByteAlign;                   // 0 = Motorola byte alignment, 1 = Intel
@@ -161,6 +170,10 @@ class EXIFInfo {
     clear();
   }
 };
+
+// Explicit template for std::string - all other types are numeric and handles above
+template<>
+inline bool EXIFInfo::isValid( std::string data ) const { return !data.empty(); }
 
 }
 

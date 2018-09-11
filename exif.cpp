@@ -898,52 +898,52 @@ void easyexif::EXIFInfo::clear() {
 
   // Shorts / unsigned / double
   ByteAlign = 0;
-  Orientation = 0;
+  Orientation = 1;
 
-  BitsPerSample = 0;
+  BitsPerSample = 8;
   XResolution = 72.0;
   YResolution = 72.0;
-  ResolutionUnit = 2;   // default is inches
-  ExposureTime = 0;
-  FNumber = 0;
+  ResolutionUnit = 2;
+  ExposureTime = std::numeric_limits<double>::max();
+  FNumber = std::numeric_limits<double>::max();
   ExposureProgram = 0;
   ExposureMode = std::numeric_limits<unsigned short>::max();
-  ISOSpeedRatings = 0;
-  ShutterSpeedValue = 0;
-  ExposureBiasValue = 0;
-  SubjectDistance = 0;
-  FocalLength = 0;
-  FocalLengthIn35mm = 0;
-  Flash = 0;
-  FlashReturnedLight = 0;
-  FlashMode = 0;
+  ISOSpeedRatings = std::numeric_limits<unsigned short>::max();
+  ShutterSpeedValue = std::numeric_limits<double>::max();
+  ExposureBiasValue = std::numeric_limits<double>::max();
+  SubjectDistance = std::numeric_limits<double>::max();
+  FocalLength = std::numeric_limits<double>::max();
+  FocalLengthIn35mm = std::numeric_limits<unsigned short>::max();
+  Flash = std::numeric_limits<char>::max();
+  FlashReturnedLight = std::numeric_limits<unsigned short>::max();
+  FlashMode = std::numeric_limits<unsigned short>::max();
   MeteringMode = 0;
-  ImageWidth = 0;
-  ImageHeight = 0;
+  ImageWidth = std::numeric_limits<unsigned int>::max();
+  ImageHeight = std::numeric_limits<unsigned int>::max();
 
   // Geolocation
-  GeoLocation.Latitude = 0;
-  GeoLocation.Longitude = 0;
-  GeoLocation.Altitude = 0;
+  GeoLocation.Latitude = std::numeric_limits<double>::max();
+  GeoLocation.Longitude = std::numeric_limits<double>::max();
+  GeoLocation.Altitude = std::numeric_limits<double>::max();
   GeoLocation.AltitudeRef = 0;
-  GeoLocation.DOP = 0;
-  GeoLocation.LatComponents.degrees = 0;
-  GeoLocation.LatComponents.minutes = 0;
-  GeoLocation.LatComponents.seconds = 0;
+  GeoLocation.DOP = std::numeric_limits<double>::max();
+  GeoLocation.LatComponents.degrees = std::numeric_limits<double>::max();
+  GeoLocation.LatComponents.minutes = std::numeric_limits<double>::max();
+  GeoLocation.LatComponents.seconds = std::numeric_limits<double>::max();
   GeoLocation.LatComponents.direction = '?';
-  GeoLocation.LonComponents.degrees = 0;
-  GeoLocation.LonComponents.minutes = 0;
-  GeoLocation.LonComponents.seconds = 0;
+  GeoLocation.LonComponents.degrees = std::numeric_limits<double>::max();
+  GeoLocation.LonComponents.minutes = std::numeric_limits<double>::max();
+  GeoLocation.LonComponents.seconds = std::numeric_limits<double>::max();
   GeoLocation.LonComponents.direction = '?';
 
   // LensInfo
-  LensInfo.FocalLengthMax = 0;
-  LensInfo.FocalLengthMin = 0;
-  LensInfo.FStopMax = 0;
-  LensInfo.FStopMin = 0;
-  LensInfo.FocalPlaneYResolution = 0;
-  LensInfo.FocalPlaneXResolution = 0;
-  LensInfo.FocalPlaneResolutionUnit = 0;
+  LensInfo.FocalLengthMax = std::numeric_limits<double>::max();
+  LensInfo.FocalLengthMin = std::numeric_limits<double>::max();
+  LensInfo.FStopMax = std::numeric_limits<double>::max();
+  LensInfo.FStopMin = std::numeric_limits<double>::max();
+  LensInfo.FocalPlaneYResolution = std::numeric_limits<double>::max();
+  LensInfo.FocalPlaneXResolution = std::numeric_limits<double>::max();
+  LensInfo.FocalPlaneResolutionUnit = 2;
   LensInfo.Make = "";
   LensInfo.Model = "";
 }
