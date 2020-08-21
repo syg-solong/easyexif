@@ -4,6 +4,7 @@
 
   Copyright (c) 2010-2015 Mayank Lahiri
   mlahiri@gmail.com
+  Modified work Copyright (c) 2018-2020 Andy Maloney <asmaloney@gmail.com>
   All rights reserved (BSD License).
 
   See exif.h for version history.
