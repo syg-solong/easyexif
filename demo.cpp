@@ -64,6 +64,10 @@ int main(int argc, char *argv[]) {
     printf("ResolutionUnit       : %u\n", result.ResolutionUnit);
   }
 
+  if (result.isValid(result.ColorSpace)) {
+    printf("Color space          : %u\n", result.ColorSpace);
+  }
+
   if (result.isValid(result.ImageWidth)) {
     printf("Image width          : %u\n", result.ImageWidth);
   }

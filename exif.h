@@ -135,6 +135,11 @@ class EXIFInfo {
                                     // 3: spot
                                     // 4: multi-spot
                                     // 5: multi-segment
+  unsigned short ColorSpace;        // 0x1 = sRGB
+                                    // 0x2 = Adobe RGB
+                                    // 0xfffd = Wide Gamut RGB
+                                    // 0xfffe = ICC Profile
+                                    // 0xffff = Uncalibrated
   unsigned ImageWidth;              // Image width reported in EXIF data
   unsigned ImageHeight;             // Image height reported in EXIF data
   struct Geolocation_t {            // GPS information embedded in file

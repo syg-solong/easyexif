@@ -696,6 +696,13 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
             this->SubSecTimeOriginal = result.val_string();
           break;
 
+        case 0xa001:
+          // Color Space
+          if (result.format() == 3 && !result.val_short().empty()) {
+            this->ColorSpace = result.val_short().front();
+          }
+          break;
+
         case 0xa002:
           // EXIF Image width
           if (result.format() == 4 && !result.val_long().empty())
@@ -917,6 +924,7 @@ void easyexif::EXIFInfo::clear() {
   FlashReturnedLight = std::numeric_limits<unsigned short>::max();
   FlashMode = std::numeric_limits<unsigned short>::max();
   MeteringMode = 0;
+  ColorSpace = std::numeric_limits<unsigned short>::max();
   ImageWidth = std::numeric_limits<unsigned int>::max();
   ImageHeight = std::numeric_limits<unsigned int>::max();
 
