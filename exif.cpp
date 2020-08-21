@@ -40,6 +40,21 @@ using std::string;
 
 namespace {
 
+enum DataFormat {
+  UnsignedByte = 1,
+  AsciiStrings,
+  UnsignedShort,
+  UnsignedLong,
+  UnsignedRational,
+  SignedByte,
+  Undefined,
+  SignedShort,
+  SignedLong,
+  SignedRational,
+  SingleFloat,
+  DoubleFloat,
+};
+
 struct Rational {
   uint32_t numerator, denominator;
   operator double() const {
@@ -79,6 +94,9 @@ class IFEntry {
   unsigned short tag() const { return tag_; }
   void tag(unsigned short tag) { tag_ = tag; }
   unsigned short format() const { return format_; }
+
+  bool isFormat(DataFormat inFormat) const { return format_ == inFormat; }
+
   bool format(unsigned short format) {
     switch (format) {
       case 0x01:
@@ -334,13 +352,13 @@ IFEntry parseIFEntry_temp(const unsigned char *buf, const unsigned offs,
 
   // Parse value in specified format
   switch (result.format()) {
-    case 1:
+    case UnsignedByte:
       if (!extract_values<uint8_t, alignIntel>(result.val_byte(), buf, base,
                                                len, result)) {
         result.tag(0xFF);
       }
       break;
-    case 2:
+    case AsciiStrings:
       // string is basically sequence of uint8_t (well, according to EXIF even
       // uint7_t, but
       // we don't have that), so just read it as bytes
@@ -355,27 +373,27 @@ IFEntry parseIFEntry_temp(const unsigned char *buf, const unsigned offs,
         result.val_string().resize(result.val_string().length() - 1);
       }
       break;
-    case 3:
+    case UnsignedShort:
       if (!extract_values<uint16_t, alignIntel>(result.val_short(), buf, base,
                                                 len, result)) {
         result.tag(0xFF);
       }
       break;
-    case 4:
+    case UnsignedLong:
       if (!extract_values<uint32_t, alignIntel>(result.val_long(), buf, base,
                                                 len, result)) {
         result.tag(0xFF);
       }
       break;
-    case 5:
-    case 10:
+    case UnsignedRational:
+    case SignedRational:
       if (!extract_values<Rational, alignIntel>(result.val_rational(), buf,
                                                 base, len, result)) {
         result.tag(0xFF);
       }
       break;
-    case 7:
-    case 9:
+    case Undefined:
+    case SignedLong:
       break;
     default:
       result.tag(0xFF);
@@ -530,62 +548,81 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
     switch (result.tag()) {
       case 0x102:
         // Bits per sample
-        if (result.format() == 3 && !result.val_short().empty())
+        if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
           this->BitsPerSample = result.val_short().front();
+        }
         break;
 
       case 0x10E:
         // Image description
-        if (result.format() == 2) this->ImageDescription = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->ImageDescription = result.val_string();
+        }
         break;
 
       case 0x10F:
         // Digicam make
-        if (result.format() == 2) this->Make = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->Make = result.val_string();
+        }
         break;
 
       case 0x110:
         // Digicam model
-        if (result.format() == 2) this->Model = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->Model = result.val_string();
+        }
         break;
 
       case 0x112:
         // Orientation of image
-        if (result.format() == 3 && !result.val_short().empty())
+        if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
           this->Orientation = result.val_short().front();
+        }
         break;
 
       case 0x11A:
         // X resolution
-        if (result.format() == 5 && !result.val_rational().empty())
+        if (result.isFormat(UnsignedRational) &&
+            !result.val_rational().empty()) {
           this->XResolution = result.val_rational().front();
+        }
         break;
 
       case 0x11B:
         // Y resolution
-        if (result.format() == 5 && !result.val_rational().empty())
+        if (result.isFormat(UnsignedRational) &&
+            !result.val_rational().empty()) {
           this->YResolution = result.val_rational().front();
+        }
         break;
 
       case 0x128:
         // Resolution units
-        if (result.format() == 3 && !result.val_short().empty())
+        if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
           this->ResolutionUnit = result.val_short().front();
+        }
         break;
 
       case 0x131:
         // Software used for image
-        if (result.format() == 2) this->Software = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->Software = result.val_string();
+        }
         break;
 
       case 0x132:
         // EXIF/TIFF date/time of image modification
-        if (result.format() == 2) this->DateTime = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->DateTime = result.val_string();
+        }
         break;
 
       case 0x8298:
         // Copyright information
-        if (result.format() == 2) this->Copyright = result.val_string();
+        if (result.isFormat(AsciiStrings)) {
+          this->Copyright = result.val_string();
+        }
         break;
 
       case 0x8825:
@@ -615,61 +652,75 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
       switch (result.tag()) {
         case 0x829a:
           // Exposure time in seconds
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.isFormat(UnsignedRational) &&
+              !result.val_rational().empty()) {
             this->ExposureTime = result.val_rational().front();
+          }
           break;
 
         case 0x829d:
           // FNumber
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.isFormat(UnsignedRational) &&
+              !result.val_rational().empty()) {
             this->FNumber = result.val_rational().front();
+          }
           break;
 
         case 0x8822:
           // Exposure Program
-          if (result.format() == 3 && !result.val_short().empty())
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->ExposureProgram = result.val_short().front();
+          }
           break;
 
         case 0x8827:
           // ISO Speed Rating
-          if (result.format() == 3 && !result.val_short().empty())
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->ISOSpeedRatings = result.val_short().front();
+          }
           break;
 
         case 0x9003:
           // Original date and time
-          if (result.format() == 2)
+          if (result.isFormat(AsciiStrings)) {
             this->DateTimeOriginal = result.val_string();
+          }
           break;
 
         case 0x9004:
           // Digitization date and time
-          if (result.format() == 2)
+          if (result.isFormat(AsciiStrings)) {
             this->DateTimeDigitized = result.val_string();
+          }
           break;
 
         case 0x9201:
           // Shutter speed value
-          if (result.format() == 10 && !result.val_rational().empty())
+          if (result.isFormat(SignedRational) &&
+              !result.val_rational().empty()) {
             this->ShutterSpeedValue = result.val_rational().front();
+          }
           break;
 
         case 0x9204:
           // Exposure bias value
-          if (result.format() == 10 && !result.val_rational().empty())
+          if (result.isFormat(SignedRational) &&
+              !result.val_rational().empty()) {
             this->ExposureBiasValue = result.val_rational().front();
+          }
           break;
 
         case 0x9206:
           // Subject distance
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.isFormat(UnsignedRational) &&
+              !result.val_rational().empty()) {
             this->SubjectDistance = result.val_rational().front();
+          }
           break;
 
         case 0x9209:
           // Flash used
-          if (result.format() == 3 && !result.val_short().empty()) {
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             uint16_t data = result.val_short().front();
 
             this->FlashUnmodified = data;
@@ -681,62 +732,70 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 0x920a:
           // Focal length
-          if (result.format() == 5 && !result.val_rational().empty())
+          if (result.isFormat(UnsignedRational) &&
+              !result.val_rational().empty()) {
             this->FocalLength = result.val_rational().front();
+          }
           break;
 
         case 0x9207:
           // Metering mode
-          if (result.format() == 3 && !result.val_short().empty())
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->MeteringMode = result.val_short().front();
+          }
           break;
 
         case 0x9291:
           // Subsecond original time
-          if (result.format() == 2)
+          if (result.isFormat(AsciiStrings)) {
             this->SubSecTimeOriginal = result.val_string();
+          }
           break;
 
         case 0xa001:
           // Color Space
-          if (result.format() == 3 && !result.val_short().empty()) {
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->ColorSpace = result.val_short().front();
           }
           break;
 
         case 0xa002:
           // EXIF Image width
-          if (result.format() == 4 && !result.val_long().empty())
+          if (result.isFormat(UnsignedLong) && !result.val_long().empty()) {
             this->ImageWidth = result.val_long().front();
-          if (result.format() == 3 && !result.val_short().empty())
+          } else if (result.isFormat(UnsignedShort) &&
+                     !result.val_short().empty()) {
             this->ImageWidth = result.val_short().front();
+          }
           break;
 
         case 0xa003:
           // EXIF Image height
-          if (result.format() == 4 && !result.val_long().empty())
+          if (result.isFormat(UnsignedLong) && !result.val_long().empty()) {
             this->ImageHeight = result.val_long().front();
-          if (result.format() == 3 && !result.val_short().empty())
+          } else if (result.isFormat(UnsignedShort) &&
+                     !result.val_short().empty()) {
             this->ImageHeight = result.val_short().front();
+          }
           break;
 
         case 0xa20e:
           // EXIF Focal plane X-resolution
-          if (result.format() == 5) {
+          if (result.isFormat(UnsignedRational)) {
             this->LensInfo.FocalPlaneXResolution = result.val_rational()[0];
           }
           break;
 
         case 0xa20f:
           // EXIF Focal plane Y-resolution
-          if (result.format() == 5) {
+          if (result.isFormat(UnsignedRational)) {
             this->LensInfo.FocalPlaneYResolution = result.val_rational()[0];
           }
           break;
 
         case 0xa210:
           // EXIF Focal plane resolution unit
-          if (result.format() == 3 && !result.val_short().empty()) {
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->LensInfo.FocalPlaneResolutionUnit =
                 result.val_short().front();
           }
@@ -744,27 +803,28 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 0xa402:
           // Exposure mode
-          if (result.format() == 3 && !result.val_short().empty()) {
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->ExposureMode = result.val_short().front();
           }
           break;
 
         case 0xa403:
           // White Balance
-          if (result.format() == 3 && !result.val_short().empty()) {
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->WhiteBalance = result.val_short().front();
           }
           break;
 
         case 0xa405:
           // Focal length in 35mm film
-          if (result.format() == 3 && !result.val_short().empty())
+          if (result.isFormat(UnsignedShort) && !result.val_short().empty()) {
             this->FocalLengthIn35mm = result.val_short().front();
+          }
           break;
 
         case 0xa432:
           // Focal length and FStop.
-          if (result.format() == 5) {
+          if (result.isFormat(UnsignedRational)) {
             int sz = static_cast<unsigned>(result.val_rational().size());
             if (sz) this->LensInfo.FocalLengthMin = result.val_rational()[0];
             if (sz > 1)
@@ -776,14 +836,14 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 0xa433:
           // Lens make.
-          if (result.format() == 2) {
+          if (result.isFormat(AsciiStrings)) {
             this->LensInfo.Make = result.val_string();
           }
           break;
 
         case 0xa434:
           // Lens model.
-          if (result.format() == 2) {
+          if (result.isFormat(AsciiStrings)) {
             this->LensInfo.Model = result.val_string();
           }
           break;
@@ -817,7 +877,8 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 2:
           // GPS latitude
-          if ((format == 5 || format == 10) && length == 3) {
+          if ((format == UnsignedRational || format == SignedRational) &&
+              length == 3) {
             this->GeoLocation.LatComponents.degrees = parse_value<Rational>(
                 buf + data + tiff_header_start, alignIntel);
             this->GeoLocation.LatComponents.minutes = parse_value<Rational>(
@@ -847,7 +908,8 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 4:
           // GPS longitude
-          if ((format == 5 || format == 10) && length == 3) {
+          if ((format == UnsignedRational || format == SignedRational) &&
+              length == 3) {
             this->GeoLocation.LonComponents.degrees = parse_value<Rational>(
                 buf + data + tiff_header_start, alignIntel);
             this->GeoLocation.LonComponents.minutes = parse_value<Rational>(
@@ -873,7 +935,7 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 6:
           // GPS altitude
-          if ((format == 5 || format == 10)) {
+          if (format == UnsignedRational || format == SignedRational) {
             this->GeoLocation.Altitude = parse_value<Rational>(
                 buf + data + tiff_header_start, alignIntel);
             if (1 == this->GeoLocation.AltitudeRef) {
@@ -884,7 +946,7 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
 
         case 11:
           // GPS degree of precision (DOP)
-          if ((format == 5 || format == 10)) {
+          if (format == UnsignedRational || format == SignedRational) {
             this->GeoLocation.DOP = parse_value<Rational>(
                 buf + data + tiff_header_start, alignIntel);
           }
