@@ -13,9 +13,6 @@
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -27,3 +24,6 @@ demo
 *.exe
 *.out
 *.app
+
+# Other
+*.user
