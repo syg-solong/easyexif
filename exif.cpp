@@ -748,6 +748,13 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
           }
           break;
 
+        case 0xa403:
+          // White Balance
+          if (result.format() == 3 && !result.val_short().empty()) {
+            this->WhiteBalance = result.val_short().front();
+          }
+          break;
+
         case 0xa405:
           // Focal length in 35mm film
           if (result.format() == 3 && !result.val_short().empty())
@@ -913,6 +920,7 @@ void easyexif::EXIFInfo::clear() {
   FNumber = std::numeric_limits<double>::max();
   ExposureProgram = 0;
   ExposureMode = std::numeric_limits<unsigned short>::max();
+  WhiteBalance = std::numeric_limits<unsigned short>::max();
   ISOSpeedRatings = std::numeric_limits<unsigned short>::max();
   ShutterSpeedValue = std::numeric_limits<double>::max();
   ExposureBiasValue = std::numeric_limits<double>::max();

@@ -109,6 +109,8 @@ class EXIFInfo {
                                     // 0: Auto
                                     // 1: Manual
                                     // 2: Auto bracket
+  unsigned short WhiteBalance;      // 0 = Auto
+                                    // 1 = Manual
   unsigned short ISOSpeedRatings;   // ISO speed
   double ShutterSpeedValue;         // Shutter speed (reciprocal of exposure time)
   double ExposureBiasValue;         // Exposure bias value in EV

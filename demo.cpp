@@ -68,6 +68,10 @@ int main(int argc, char *argv[]) {
     printf("Color space          : %u\n", result.ColorSpace);
   }
 
+  if (result.isValid(result.WhiteBalance)) {
+    printf("White balance        : %u\n", result.WhiteBalance);
+  }
+
   if (result.isValid(result.ImageWidth)) {
     printf("Image width          : %u\n", result.ImageWidth);
   }
