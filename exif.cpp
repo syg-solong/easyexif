@@ -151,7 +151,7 @@ class IFEntry {
         val_long_ = nullptr;
         break;
       case 0x5:
-      case 0xA:   // signed rational
+      case 0xA:  // signed rational
         delete val_rational_;
         val_rational_ = nullptr;
         break;
@@ -178,7 +178,7 @@ class IFEntry {
         val_long_ = new long_vector();
         break;
       case 0x5:
-      case 0xA:   // signed rational
+      case 0xA:  // signed rational
         val_rational_ = new rational_vector();
         break;
       case 0xff:
@@ -349,7 +349,8 @@ IFEntry parseIFEntry_temp(const unsigned char *buf, const unsigned offs,
       }
       // and cut zero byte at the end, since we don't want that in the
       // std::string
-      if (result.length() && result.val_string()[result.val_string().length() - 1] == '\0') {
+      if (result.length() &&
+          result.val_string()[result.val_string().length() - 1] == '\0') {
         result.val_string().resize(result.val_string().length() - 1);
       }
       break;
@@ -410,7 +411,7 @@ IFEntry parseIFEntry(const unsigned char *buf, const unsigned offs,
     return parseIFEntry_temp<false>(buf, offs, base, len);
   }
 }
-}
+}  // namespace
 
 //
 // Locates the EXIF segment and parses it using parseFromEXIFSegment
@@ -427,12 +428,10 @@ int easyexif::EXIFInfo::parseFrom(const unsigned char *buf, unsigned len) {
   // an 0xFFD9 is found. If JPEG end marker 0xFFD9 is not found,
   // then we can be reasonably sure that the buffer is not a JPEG.
   while (len > 2) {
-    if (buf[len - 1] == 0xD9 && buf[len - 2] == 0xFF)
-      break;
+    if (buf[len - 1] == 0xD9 && buf[len - 2] == 0xFF) break;
     len--;
   }
-  if (len <= 2)
-    return PARSE_EXIF_ERROR_NO_JPEG;
+  if (len <= 2) return PARSE_EXIF_ERROR_NO_JPEG;
 
   clear();
 
@@ -462,8 +461,8 @@ int easyexif::EXIFInfo::parseFrom(const unsigned char *buf, unsigned len) {
 }
 
 int easyexif::EXIFInfo::parseFrom(const string &data) {
-  return parseFrom(
-      reinterpret_cast<const unsigned char *>(data.data()), static_cast<unsigned>(data.length()));
+  return parseFrom(reinterpret_cast<const unsigned char *>(data.data()),
+                   static_cast<unsigned>(data.length()));
 }
 
 //
@@ -558,19 +557,19 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
       case 0x11A:
         // X resolution
         if (result.format() == 5 && !result.val_rational().empty())
-           this->XResolution = result.val_rational().front();
+          this->XResolution = result.val_rational().front();
         break;
 
       case 0x11B:
         // Y resolution
         if (result.format() == 5 && !result.val_rational().empty())
-           this->YResolution = result.val_rational().front();
+          this->YResolution = result.val_rational().front();
         break;
 
       case 0x128:
         // Resolution units
         if (result.format() == 3 && !result.val_short().empty())
-           this->ResolutionUnit = result.val_short().front();
+          this->ResolutionUnit = result.val_short().front();
         break;
 
       case 0x131:
@@ -728,18 +727,19 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
           break;
 
         case 0xa210:
-            // EXIF Focal plane resolution unit
-            if (result.format() == 3 && !result.val_short().empty()) {
-                this->LensInfo.FocalPlaneResolutionUnit = result.val_short().front();
-            }
-            break;
+          // EXIF Focal plane resolution unit
+          if (result.format() == 3 && !result.val_short().empty()) {
+            this->LensInfo.FocalPlaneResolutionUnit =
+                result.val_short().front();
+          }
+          break;
 
         case 0xa402:
-            // Exposure mode
-            if (result.format() == 3 && !result.val_short().empty()) {
-                this->ExposureMode = result.val_short().front();
-            }
-            break;
+          // Exposure mode
+          if (result.format() == 3 && !result.val_short().empty()) {
+            this->ExposureMode = result.val_short().front();
+          }
+          break;
 
         case 0xa405:
           // Focal length in 35mm film
@@ -751,14 +751,11 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(const unsigned char *buf,
           // Focal length and FStop.
           if (result.format() == 5) {
             int sz = static_cast<unsigned>(result.val_rational().size());
-            if (sz)
-              this->LensInfo.FocalLengthMin = result.val_rational()[0];
+            if (sz) this->LensInfo.FocalLengthMin = result.val_rational()[0];
             if (sz > 1)
               this->LensInfo.FocalLengthMax = result.val_rational()[1];
-            if (sz > 2)
-              this->LensInfo.FStopMin = result.val_rational()[2];
-            if (sz > 3)
-              this->LensInfo.FStopMax = result.val_rational()[3];
+            if (sz > 2) this->LensInfo.FStopMin = result.val_rational()[2];
+            if (sz > 3) this->LensInfo.FStopMax = result.val_rational()[3];
           }
           break;
 

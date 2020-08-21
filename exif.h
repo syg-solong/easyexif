@@ -53,20 +53,19 @@ class EXIFInfo {
   int parseFrom(const unsigned char *data, unsigned length);
   int parseFrom(const std::string &data);
 
-  // Parsing function for an EXIF segment. This is used internally by parseFrom()
-  // but can be called for special cases where only the EXIF section is
-  // available (i.e., a blob starting with the bytes "Exif\0\0").
+  // Parsing function for an EXIF segment. This is used internally by
+  // parseFrom() but can be called for special cases where only the EXIF section
+  // is available (i.e., a blob starting with the bytes "Exif\0\0").
   int parseFromEXIFSegment(const unsigned char *buf, unsigned len);
 
   // Set all data members to default values.
   void clear();
 
   // Check if the value is valid
-  template<typename T>
-  inline bool isValid( T data ) const
-  {
-     static_assert( std::is_arithmetic<T>::value, "T must be numeric" );
-     return data != std::numeric_limits<T>::max();
+  template <typename T>
+  inline bool isValid(T data) const {
+    static_assert(std::is_arithmetic<T>::value, "T must be numeric");
+    return data != std::numeric_limits<T>::max();
   }
 
   // Data fields filled out by parseFrom()
@@ -168,17 +167,17 @@ class EXIFInfo {
     std::string Model;              // Lens model
   } LensInfo;
 
-
-  EXIFInfo() {
-    clear();
-  }
+  EXIFInfo() { clear(); }
 };
 
-// Explicit template for std::string - all other types are numeric and handles above
-template<>
-inline bool EXIFInfo::isValid( std::string data ) const { return !data.empty(); }
-
+// Explicit template for std::string - all other types are numeric and handled
+// above
+template <>
+inline bool EXIFInfo::isValid(std::string data) const {
+  return !data.empty();
 }
+
+}  // namespace easyexif
 
 // Parse was successful
 #define PARSE_EXIF_SUCCESS                    0
