@@ -1,5 +1,4 @@
-easyexif
-========
+# easyexif
 
 A tiny ISO-compliant C++ EXIF parsing library.
 
@@ -7,55 +6,42 @@ EasyEXIF is a tiny, lightweight C++ library that parses basic information out of
 
 Why use this library? __Include one .h file, compile one .cc file, and that's it.__
 
-Sometimes you just need to quickly extract basic information from a JPEG file's EXIF headers: the time the image was taken (not the file timestamp, the camera's internal time), the F-stop or exposure time, GPS information embedded in the EXIF file, what the camera make and model was, etc. Unfortunately, all the EXIF libraries out there are not very lightweight or easy to integrate into larger programs. EasyEXIF aims to solve that problem, and is released under a very liberal BSD License for use practically anywhere.
+Sometimes you just need to quickly extract basic information from a JPEG file's EXIF headers: the time the image was taken (not the file timestamp, the camera's internal time), the F-stop or exposure time, GPS information embedded in the EXIF file, what the camera make and model was, etc.. Unfortunately, all the EXIF libraries out there are not very lightweight or easy to integrate into larger programs. EasyEXIF aims to solve that problem, and is released under a very liberal BSD License for use practically anywhere.
 
 The only two files you need for your project are `exif.cpp` and `exif.h`. There are no dependencies on any build system or external libraries.
 
-Who uses this library?
+Here is an up-to-date list of [valid EXIF tags](https://exiftool.org/TagNames/EXIF.html).
 
-  * [Blackberry's BBM messenger](http://us.blackberry.com/legal/thirdpartysoftware/bbmthirdparty/x-platform-bbm.html).
-  * [Altova Software](http://www.altova.com/legal_3rdparty.html).
-  * [Subsurface](http://trac.hohndel.org/browser/subsurface/qt-ui/exif.h?rev=a3d82bf9b1bf7a25e20e75aceeafe80cbc4f78f3).
-  * [Loom SDK](https://github.com/LoomSDK/LoomSDK/blob/master/loom/vendor/jheadexif/easyexif.h)
+## Fork
 
-### Features:
+[asmaloney](https://github.com/asmaloney) forked this library [from here](https://github.com/mayanklahiri/easyexif) since it seemed to no longer be maintained. I fixed a couple of bugs, added several fields, and added a way to determine if a field was set in the image's EXIF data or not.
 
-  1. Supports common Exif fields including GPS, ISO speed, etc.
+## Features:
+
+  1. Supports common EXIF fields including GPS, ISO speed, etc.
   2. Extensively documented in the source.
   3. Valgrind tested for memory leaks.
   4. Handles corrupt JPEGs.
   5. Compiles without complaints using `-Wall -Wextra -Werror -pedantic -ansi` on gcc v4.8.2
   6. No uses of new/malloc.
 
-### License
+## License
 
 BSD. Free for personal and commercial use.
 
-### Contributions
+## Contributions
 
 Reasonable pull requests are gladly accepted. Please ensure that you have run the following steps before submitting a patch:
 
   1. `clang-format` the source files, using the default style (Google).
   2. Run `test.sh` to make sure test images are being parsed correctly.
   3. Compile and run `demo` using `valgrind --leak-check=full` to ensure that there are no memory leaks.
-  4. Add yourself to the contributors list in `CONTRIBUTORS` and `README.md`.
+  4. Add yourself to the contributors list in `CONTRIBUTORS`.
   5. For misbehaving images, please try to include a test image that misbehaves in the `test-images` folder.
 
-The following people have committed patches to EasyExif.
+## Example:
 
-  * Tomas Volf
-  * Seth Fowler
-  * Val Malykh
-  * Carlos Apablaza Brito
-  * Simon Fuhrmann
-  * Toshiaki Ohkuma
-  * pet.b.hunt
-  * Jason Moey
-
-
-### Example:
-
-See `demo.cpp` for other Exif fields.
+See `demo.cpp` for other EXIF fields.
 
 ```C++
   #include "exif.h"
