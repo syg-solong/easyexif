@@ -1,3 +1,4 @@
+#pragma once
 /**************************************************************************
   exif.h  -- A simple ISO C++ library to parse basic EXIF
              information from a JPEG file.
@@ -32,8 +33,6 @@
    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
    EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef __EXIF_H
-#define __EXIF_H
 
 #include <cmath>
 #include <string>
@@ -197,5 +196,3 @@ inline bool EXIFInfo::isValid(std::string data) const {
 #define PARSE_EXIF_ERROR_UNKNOWN_BYTEALIGN    1984
 // EXIF header was found, but data was corrupted.
 #define PARSE_EXIF_ERROR_CORRUPT              1985
-
-#endif
