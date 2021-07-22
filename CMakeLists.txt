@@ -15,6 +15,14 @@ if ( EXISTS "${LOC_PATH}" )
     message( FATAL_ERROR "You cannot build in the source directory. Please use a build subdirectory." )
 endif()
 
+add_library(easyexif 
+    STATIC 
+        exif.cpp)
+target_compile_features( easyexif
+    PRIVATE
+        cxx_std_14
+)
+
 add_executable( ${PROJECT_NAME} )
 
 target_compile_features( ${PROJECT_NAME}
@@ -25,6 +33,12 @@ target_compile_features( ${PROJECT_NAME}
 target_sources( ${PROJECT_NAME}
     PRIVATE
         demo.cpp
-        exif.cpp
-        exif.h
 )
+
+target_link_libraries( ${PROJECT_NAME}
+    PRIVATE
+        easyexif
+)
+
+include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME} easyexif)
